@@ -1,0 +1,6 @@
+framework module Pods_TesseractForCSV {
+  umbrella header "Pods-TesseractForCSV-umbrella.h"
+
+  export *
+  module * { export * }
+}
