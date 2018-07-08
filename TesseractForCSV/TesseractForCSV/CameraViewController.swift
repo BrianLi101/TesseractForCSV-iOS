@@ -24,6 +24,7 @@ class CameraViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -59,7 +60,7 @@ class CameraViewController: UIViewController {
             print("Error: could not access camera")
         }
         
-        testTextToCSVConverter()
+        //testTextToCSVConverter()
         
     }
     
@@ -68,6 +69,8 @@ class CameraViewController: UIViewController {
         
         // update preview layer frame
         previewLayer?.frame = cameraView.bounds
+        
+        self.view.bringSubview(toFront: captureButton)
     }
     
     
@@ -77,10 +80,35 @@ class CameraViewController: UIViewController {
         capturePhoto()
     }
     
+    func createCSVFile(fromText text: String, forFile fileName: String) -> URL {
+        
+        // run text conversion
+        let converter = TextToCSVConverter.sharedInstance
+        let cleanedText = converter.cleanTesseractText(forText: text)
+
+        let csvText = converter.convertTextToCSVString(forText: cleanedText, withConversionMethod: .guesstimate)
+        
+        // save CSV file and get file url
+        let url = converter.convertCSVStringToFile(forString: csvText, withFileName: fileName)
+        
+        return url!
+    }
+    
+    /*
+     * method to display webView of contents in file path
+     */
+    func displayContentsOfCSVFile(forFile fileURL: URL) {
+        
+        // load file in webView to verify accuracy
+        let webView = WKWebView(frame: self.view.bounds)
+        webView.loadFileURL(fileURL, allowingReadAccessTo: fileURL)
+        self.view.addSubview(webView)
+    }
+    
     /*
      * method to test if TextToCSVConvertor is working
      */
-    func testTextToCSVConverter() {
+    func testTextToCSVConverterDefault() {
         
         // default text to convert to CSV
         let text = """
@@ -93,7 +121,6 @@ Quarter Revenue
         // run text conversion
         let converter = TextToCSVConverter.sharedInstance
         let csvText = converter.convertTextToCSVString(forText: text, withConversionMethod: .basic)
-        print(csvText)
         
         // save CSV file and get file url
         let url = converter.convertCSVStringToFile(forString: csvText, withFileName: "Test")
@@ -101,7 +128,7 @@ Quarter Revenue
         // load file in webView to verify accuracy
         let webView = WKWebView(frame: self.view.bounds)
         webView.loadFileURL(url!, allowingReadAccessTo: url!)
-        dump(url!)
+
         self.view.addSubview(webView)
     }
 }
@@ -147,11 +174,15 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
             
             // run asynchronous call for OCR photo processing
             DispatchQueue.main.async {
-                // run OCR on image and print the output text
-                self.tesseractManager.runOCRonImage(inputImage: self.photoImage!)
                 
                 // update image view with processed black and white image
                 imageView.image = self.tesseractManager.processImageWithAdaptiveThresholdFilter(forImage: self.photoImage!)
+                
+                // run OCR on image and print the output text
+                let ocrText = self.tesseractManager.runOCRonImage(inputImage: self.photoImage!)
+                
+                let fileURL = self.createCSVFile(fromText: ocrText, forFile: "Test")
+                self.displayContentsOfCSVFile(forFile: fileURL)
                 
                 // not currently working
                 // self.tesseractManager.getImageWithBlocks(inputImage: self.photoImage!)

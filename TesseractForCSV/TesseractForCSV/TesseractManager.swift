@@ -30,7 +30,7 @@ class TesseractManager {
         //tesseract.charWhitelist = "01234567890"
         
         // allow recognition of only numbers, letters, and basic symbols
-        tesseract.charWhitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,()"
+        tesseract.charWhitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,()$"
         
         //tesseract.image = image
     }
