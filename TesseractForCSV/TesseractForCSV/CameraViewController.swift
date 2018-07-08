@@ -8,6 +8,7 @@
 
 import UIKit
 import AVFoundation
+import WebKit
 
 class CameraViewController: UIViewController {
 
@@ -57,6 +58,9 @@ class CameraViewController: UIViewController {
         } catch {
             print("Error: could not access camera")
         }
+        
+        testTextToCSVConverter()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -71,6 +75,34 @@ class CameraViewController: UIViewController {
         
         // call function to take photo
         capturePhoto()
+    }
+    
+    /*
+     * method to test if TextToCSVConvertor is working
+     */
+    func testTextToCSVConverter() {
+        
+        // default text to convert to CSV
+        let text = """
+Quarter Revenue
+1st $100000
+2nd $98000
+3rd $82000
+4th $120000
+"""
+        // run text conversion
+        let converter = TextToCSVConverter.sharedInstance
+        let csvText = converter.convertTextToCSVString(forText: text, withConversionMethod: .basic)
+        print(csvText)
+        
+        // save CSV file and get file url
+        let url = converter.convertCSVStringToFile(forString: csvText, withFileName: "Test")
+        
+        // load file in webView to verify accuracy
+        let webView = WKWebView(frame: self.view.bounds)
+        webView.loadFileURL(url!, allowingReadAccessTo: url!)
+        dump(url!)
+        self.view.addSubview(webView)
     }
 }
 

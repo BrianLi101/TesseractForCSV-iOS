@@ -10,6 +10,7 @@
 		326F861FA5A4BA7FEC267251 /* Pods_TesseractForCSVUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BD504016E426A3D8D778C7DE /* Pods_TesseractForCSVUITests.framework */; };
 		8311E407FC5AE4C07F00E8FF /* Pods_TesseractForCSV.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2336137FDBAFD63CF7DD06ED /* Pods_TesseractForCSV.framework */; };
 		875727F9FAA26E0DE1E03110 /* Pods_TesseractForCSVTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 192376D0E7C077FB5B72A7C5 /* Pods_TesseractForCSVTests.framework */; };
+		C7026FFB20F179A5000D9E75 /* TextToCSVConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7026FFA20F179A5000D9E75 /* TextToCSVConverter.swift */; };
 		C7A65F2C20EEFB6B00600261 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A65F2B20EEFB6B00600261 /* AppDelegate.swift */; };
 		C7A65F2E20EEFB6B00600261 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A65F2D20EEFB6B00600261 /* CameraViewController.swift */; };
 		C7A65F3120EEFB6B00600261 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C7A65F2F20EEFB6B00600261 /* Main.storyboard */; };
@@ -98,6 +99,7 @@
 		2336137FDBAFD63CF7DD06ED /* Pods_TesseractForCSV.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TesseractForCSV.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		85C8B9F7E67C966006399354 /* Pods-TesseractForCSV.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TesseractForCSV.debug.xcconfig"; path = "Pods/Target Support Files/Pods-TesseractForCSV/Pods-TesseractForCSV.debug.xcconfig"; sourceTree = "<group>"; };
 		BD504016E426A3D8D778C7DE /* Pods_TesseractForCSVUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TesseractForCSVUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C7026FFA20F179A5000D9E75 /* TextToCSVConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextToCSVConverter.swift; sourceTree = "<group>"; };
 		C7A65F2820EEFB6B00600261 /* TesseractForCSV.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TesseractForCSV.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A65F2B20EEFB6B00600261 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C7A65F2D20EEFB6B00600261 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 				C7A65F2B20EEFB6B00600261 /* AppDelegate.swift */,
 				C7A65F2D20EEFB6B00600261 /* CameraViewController.swift */,
 				C7A65F5B20EF2DB700600261 /* TesseractManager.swift */,
+				C7026FFA20F179A5000D9E75 /* TextToCSVConverter.swift */,
 				C7A65F2F20EEFB6B00600261 /* Main.storyboard */,
 				C7A65F3220EEFB6C00600261 /* Assets.xcassets */,
 				C7A65F6320EF3B4A00600261 /* tessdata */,
@@ -502,6 +505,7 @@
 				C7A65F2E20EEFB6B00600261 /* CameraViewController.swift in Sources */,
 				C7A65F5C20EF2DB700600261 /* TesseractManager.swift in Sources */,
 				C7A65F2C20EEFB6B00600261 /* AppDelegate.swift in Sources */,
+				C7026FFB20F179A5000D9E75 /* TextToCSVConverter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
