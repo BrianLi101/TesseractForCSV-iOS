@@ -8,6 +8,8 @@
 
 import Foundation
 
+private let DELINEATOR: Character = " "
+
 class TextToCSVConverter {
     
     enum ConversionMethod {
@@ -33,7 +35,7 @@ class TextToCSVConverter {
         cleanedText = cleanedText.replacingOccurrences(of: "\n\n", with: "\n")
         
         // remove randomly recognized periods
-        cleanedText = cleanedText.replacingOccurrences(of: " . ", with: " ")
+        cleanedText = cleanedText.replacingOccurrences(of: " . ", with: " ") // CONCERN: missing data is represented by periods in some statistical data sets
         cleanedText = cleanedText.replacingOccurrences(of: ".\n", with: "\n")
         
         // remove randomly placed commas
@@ -43,6 +45,7 @@ class TextToCSVConverter {
         cleanedText = cleanedText.replacingOccurrences(of: "    ", with: " ")
         cleanedText = cleanedText.replacingOccurrences(of: "   ", with: " ")
         cleanedText = cleanedText.replacingOccurrences(of: "  ", with: " ")
+        // CONCERN: multiple spaces can be more clear indications of new columns, whereas single spaces might just be parts of phrases
         
         // remove spaces on or before new lines
         cleanedText = cleanedText.replacingOccurrences(of: " \n", with: "\n")
@@ -93,8 +96,8 @@ class TextToCSVConverter {
             csvString = textToCSVBasic(forRows: rows)
         case .guesstimate:
             print("Using row guessing conversion")
-            print(guessColumnNumber(forRows: rows))
-            csvString = textToCSVBasic(forRows: rows)
+            let columnNum = guessColumnNumber(forRows: rows)
+            csvString = textToCSVGuesstimate(forRows: rows, withColumnNumber: columnNum)
         default:
             print("Using default conversion")
             csvString = ""
@@ -122,21 +125,25 @@ class TextToCSVConverter {
         var csvString = ""
         
         for row in rows {
-            let spaces = getOccurrencesOf(of: " ", inString: row)
+            let rowsColumns = getOccurrencesOf(of: " ", inString: row) + 1
             
-            if spaces == columns {
+            if rowsColumns == columns {
                 // columns in row are correct
                 
                 // TODO: add "" around numbers and words to escape for the use of commas
                 csvString += row.replacingOccurrences(of: " ", with: ",")
                 csvString += "\n"
-            } else if spaces > columns {
+            } else if rowsColumns > columns {
                 // columns in row are too many
-                var strArray = row.split(separator: " ")
+                print("\n\nRow's columns are more than average columns")
                 
                 // not too sure how to handle this yet
+                
+                // basic implementation removes the shortest string column in the row
+                csvString += removeExtraColumnsFromRow(forRow: row, withColumns: columns)
             } else {
                 // columns in row are too few
+                // TODO: handle this case
                 
                 // TODO: add "" around numbers and words to escape for the use of commas
                 csvString += row.replacingOccurrences(of: " ", with: ",")
@@ -147,6 +154,34 @@ class TextToCSVConverter {
         }
         
         return csvString
+    }
+    
+    private func removeExtraColumnsFromRow(forRow row: String, withColumns columns: Int) -> String {
+        var strArray = row.split(separator: DELINEATOR)
+        print(strArray)
+        // double check to see that row actually has too many columns
+        if strArray.count > columns {
+            while strArray.count > columns {
+                if let min = strArray.min(by: {$1.count > $0.count}) {
+                    print(min)
+                    strArray.remove(at: strArray.index(of: min)!)
+                }
+            }
+            
+            var rowString = ""
+            
+            for i in 0...(strArray.count - 1) {
+                rowString += strArray[i]
+                if i != strArray.count - 1 {
+                    rowString += ","
+                }
+            }
+            rowString += "\n"
+            print(rowString)
+            return rowString
+        } else {
+            return ""
+        }
     }
     
     /*
@@ -163,7 +198,7 @@ class TextToCSVConverter {
         avg.round(.toNearestOrEven)
         print(avg)
         print(Int(avg))
-        return Int(avg)
+        return Int(avg) + 1
     }
     
     /*
