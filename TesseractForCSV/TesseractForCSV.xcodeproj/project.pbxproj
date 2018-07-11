@@ -23,6 +23,7 @@
 		C7A65F6020EF33EE00600261 /* TesseractOCR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7A65F5F20EF33EE00600261 /* TesseractOCR.framework */; };
 		C7A65F6220EF37DE00600261 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C7A65F6120EF37DE00600261 /* libstdc++.tbd */; };
 		C7A65F6420EF3B4A00600261 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = C7A65F6320EF3B4A00600261 /* tessdata */; };
+		C7C34D4E20F5E75400093892 /* capture.png in Resources */ = {isa = PBXBuildFile; fileRef = C7C34D4A20F5E75300093892 /* capture.png */; };
 		C7FAEB0220F0AB0500733C60 /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7FAEAFD20F0AA6600733C60 /* GPUImage.framework */; };
 		C7FAEB0420F0AC0900733C60 /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7FAEAFD20F0AA6600733C60 /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -119,6 +120,7 @@
 		C7A65F5F20EF33EE00600261 /* TesseractOCR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TesseractOCR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A65F6120EF37DE00600261 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		C7A65F6320EF3B4A00600261 /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
+		C7C34D4A20F5E75300093892 /* capture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = capture.png; sourceTree = "<group>"; };
 		C7FAEAF120F0AA6600733C60 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../../GPUImage2/framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
 		CADC49CFB770BD4CFF95F45B /* Pods-TesseractForCSVUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TesseractForCSVUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TesseractForCSVUITests/Pods-TesseractForCSVUITests.release.xcconfig"; sourceTree = "<group>"; };
 		D465BBD4C8C677E8D3F903F3 /* Pods-TesseractForCSV.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TesseractForCSV.release.xcconfig"; path = "Pods/Target Support Files/Pods-TesseractForCSV/Pods-TesseractForCSV.release.xcconfig"; sourceTree = "<group>"; };
@@ -205,6 +207,7 @@
 				C7A65F6320EF3B4A00600261 /* tessdata */,
 				C7A65F3420EEFB6C00600261 /* LaunchScreen.storyboard */,
 				C7A65F3720EEFB6C00600261 /* Info.plist */,
+				C7C34D4A20F5E75300093892 /* capture.png */,
 			);
 			path = TesseractForCSV;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7C34D4E20F5E75400093892 /* capture.png in Resources */,
 				C7A65F3620EEFB6C00600261 /* LaunchScreen.storyboard in Resources */,
 				C7A65F6420EF3B4A00600261 /* tessdata in Resources */,
 				C7A65F3320EEFB6C00600261 /* Assets.xcassets in Resources */,

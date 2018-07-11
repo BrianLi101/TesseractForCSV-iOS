@@ -39,7 +39,8 @@ class TextToCSVConverter {
         cleanedText = cleanedText.replacingOccurrences(of: ".\n", with: "\n")
         
         // remove randomly placed commas
-        cleanedText = cleanedText.replacingOccurrences(of: " , ", with: " ")
+        cleanedText = cleanedText.replacingOccurrences(of: " , ", with: " ") // CONCERN: may overlook periods read as commas for missing values
+        cleanedText = cleanedText.replacingOccurrences(of: ", ", with: ". ") // CONCERN: c
         
         // remove extra spaces
         cleanedText = cleanedText.replacingOccurrences(of: "    ", with: " ")
@@ -123,19 +124,19 @@ class TextToCSVConverter {
     
     private func textToCSVGuesstimate(forRows rows: [String], withColumnNumber columns: Int) -> String {
         var csvString = ""
-        
+        print("\n\n\nGuessing \(columns) columns")
         for row in rows {
             let rowsColumns = getOccurrencesOf(of: " ", inString: row) + 1
-            
+            print("Row is: \(row) with \(rowsColumns) columns")
             if rowsColumns == columns {
                 // columns in row are correct
-                
+                print("Row's columns are equal to average columns")
                 // TODO: add "" around numbers and words to escape for the use of commas
                 csvString += row.replacingOccurrences(of: " ", with: ",")
                 csvString += "\n"
             } else if rowsColumns > columns {
                 // columns in row are too many
-                print("\n\nRow's columns are more than average columns")
+                print("Row's columns are more than average columns")
                 
                 // not too sure how to handle this yet
                 
@@ -144,6 +145,7 @@ class TextToCSVConverter {
             } else {
                 // columns in row are too few
                 // TODO: handle this case
+                print("Row's columns are less than average columns")
                 
                 // TODO: add "" around numbers and words to escape for the use of commas
                 csvString += row.replacingOccurrences(of: " ", with: ",")
@@ -158,7 +160,8 @@ class TextToCSVConverter {
     
     private func removeExtraColumnsFromRow(forRow row: String, withColumns columns: Int) -> String {
         var strArray = row.split(separator: DELINEATOR)
-        print(strArray)
+        print("Removing extra columns in: \(strArray)")
+        
         // double check to see that row actually has too many columns
         if strArray.count > columns {
             while strArray.count > columns {
@@ -190,14 +193,20 @@ class TextToCSVConverter {
     private func guessColumnNumber(forRows rows: [String]) -> Int {
         var sum: Int = 0
         for row in rows {
-            sum += getOccurrencesOf(of: " ", inString: row)
+            sum += getOccurrencesOf(of: DELINEATOR, inString: row)
         }
         print("Sum is \(sum) for \(rows.count) rows")
         var avg: Double = Double(sum) / Double(rows.count)
-        print(avg)
-        avg.round(.toNearestOrEven)
-        print(avg)
-        print(Int(avg))
+        
+        
+        // code for rounding up or down using 0.5 threshold
+        // avg.round(.toNearestOrEven)
+        
+        // round down used because tesseract more frequently picks up extra random characters
+        // code for always rounding down
+        avg.round(.down)
+        
+        // return average delmitters plus 1 to indicate number of columns
         return Int(avg) + 1
     }
     

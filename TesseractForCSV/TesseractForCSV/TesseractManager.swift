@@ -10,7 +10,7 @@ import Foundation
 import TesseractOCR
 import GPUImage
 
-class TesseractManager {
+class TesseractManager: NSObject {
     
     // MARK: - Singleton Instance
     static var sharedInstance: TesseractManager = TesseractManager()
@@ -20,17 +20,22 @@ class TesseractManager {
     private var image: UIImage!
     
     // setup TesseractManager sharedInstance
-    private init() {
+    private override init() {
+        super.init()
+        
         // set default language to english
         tesseract = G8Tesseract(language:"eng")
         
-        //tesseract.engineMode = .tesseractCubeCombined
+        // set delegate to self
+        tesseract.delegate = self
+        
+        tesseract.engineMode = .tesseractCubeCombined
         //tesseract.language = "eng+ita"
         //tesseract.delegate = self
         //tesseract.charWhitelist = "01234567890"
         
         // allow recognition of only numbers, letters, and basic symbols
-        tesseract.charWhitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,()$"
+        tesseract.charWhitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,()$-"
         
         //tesseract.image = image
     }
@@ -81,6 +86,20 @@ class TesseractManager {
         // return true if you need to interrupt tesseract before it finishes
         return false
     }
+    
+    
+    
+    
+}
+
+extension TesseractManager: G8TesseractDelegate {
+    
+    // uncomment below method to bypass Tesseract's internal threshold
+    func preprocessedImage(for tesseract: G8Tesseract?, sourceImage: UIImage?) -> UIImage? {
+        
+        print("Tesseract: bypassing internal threshold and using AdaptiveThresholdFilter")
+        return processImageWithAdaptiveThresholdFilter(forImage: sourceImage!)
+    }
 }
 
 // MARK: -GPUImage
@@ -95,7 +114,7 @@ extension TesseractManager {
         let stillImageFilter = AdaptiveThreshold()
         
         // adjust this to tweak the blur radius of the filter, defaults to 4.0
-        stillImageFilter.blurRadiusInPixels = 4.0
+        stillImageFilter.blurRadiusInPixels = 750.0
         
         // retrieve the filtered image from the filter
         var filteredImage = inputImage.filterWithOperation(stillImageFilter)

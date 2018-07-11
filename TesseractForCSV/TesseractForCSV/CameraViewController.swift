@@ -40,6 +40,7 @@ class CameraViewController: UIViewController {
         captureSession?.sessionPreset = .hd1920x1080
         
         let backCamera = AVCaptureDevice.default(for: .video)
+    
 
         do {
             let input = try AVCaptureDeviceInput(device: backCamera!)
@@ -100,7 +101,8 @@ class CameraViewController: UIViewController {
     func displayContentsOfCSVFile(forFile fileURL: URL) {
         
         // load file in webView to verify accuracy
-        let webView = WKWebView(frame: self.view.bounds)
+        //let webView = WKWebView(frame: self.view.bounds)
+        let webView = WKWebView(frame: CGRect(x: 0, y: 0, width: 300, height: 300))
         webView.loadFileURL(fileURL, allowingReadAccessTo: fileURL)
         self.view.addSubview(webView)
     }
