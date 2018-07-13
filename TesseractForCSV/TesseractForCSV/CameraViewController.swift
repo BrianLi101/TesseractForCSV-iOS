@@ -23,8 +23,9 @@ class CameraViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
         
+        // intiate the capture session
+        setUpCaptureSession()
     }
 
     override func didReceiveMemoryWarning() {
@@ -35,16 +36,35 @@ class CameraViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // start running capture session
+        captureSession?.startRunning()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        
+        // update preview layer frame
+        previewLayer?.frame = cameraView.bounds
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        // close out capture session to conserve energy
+        captureSession?.stopRunning()
+    }
+    
+    func setUpCaptureSession() {
+        
         // setup capture session for camera interface
         captureSession = AVCaptureSession()
         captureSession?.sessionPreset = .hd1920x1080
         
         let backCamera = AVCaptureDevice.default(for: .video)
-    
-
+        
         do {
             let input = try AVCaptureDeviceInput(device: backCamera!)
-
+            
             if (captureSession?.canAddInput(input))! {
                 captureSession?.addInput(input)
                 
@@ -55,25 +75,11 @@ class CameraViewController: UIViewController {
                 previewLayer?.videoGravity = .resizeAspect
                 previewLayer?.connection?.videoOrientation = .portrait
                 cameraView.layer.addSublayer(previewLayer!)
-                captureSession?.startRunning()
             }
         } catch {
             print("Error: could not access camera")
         }
-        
-        //testTextToCSVConverter()
-        
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
-        // update preview layer frame
-        previewLayer?.frame = cameraView.bounds
-        
-        self.view.bringSubview(toFront: captureButton)
-    }
-    
     
     @IBAction func takePhotoClicked(_ sender: Any) {
         
@@ -170,7 +176,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
             photoImage = UIImage(data: dataImage)
             
             // create image view and display the captured photo
-            var imageView = UIImageView(frame: self.view.bounds)
+            var imageView = UIImageView(frame: CGRect(x: self.view.frame.width/4, y: self.view.frame.height/4, width: self.view.frame.width/2, height: self.view.frame.height/2))
             imageView.image = photoImage
             self.view.addSubview(imageView)
             
