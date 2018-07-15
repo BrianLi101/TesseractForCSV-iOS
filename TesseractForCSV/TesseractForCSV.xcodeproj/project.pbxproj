@@ -26,6 +26,7 @@
 		C7A65F6020EF33EE00600261 /* TesseractOCR.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7A65F5F20EF33EE00600261 /* TesseractOCR.framework */; };
 		C7A65F6220EF37DE00600261 /* libstdc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = C7A65F6120EF37DE00600261 /* libstdc++.tbd */; };
 		C7A65F6420EF3B4A00600261 /* tessdata in Resources */ = {isa = PBXBuildFile; fileRef = C7A65F6320EF3B4A00600261 /* tessdata */; };
+		C7A7ABB420FB7D5F00561A3C /* OCRManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7A7ABB320FB7D5F00561A3C /* OCRManager.swift */; };
 		C7C34D4E20F5E75400093892 /* capture.png in Resources */ = {isa = PBXBuildFile; fileRef = C7C34D4A20F5E75300093892 /* capture.png */; };
 		C7FAEB0220F0AB0500733C60 /* GPUImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7FAEAFD20F0AA6600733C60 /* GPUImage.framework */; };
 		C7FAEB0420F0AC0900733C60 /* GPUImage.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = C7FAEAFD20F0AA6600733C60 /* GPUImage.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -126,6 +127,7 @@
 		C7A65F5F20EF33EE00600261 /* TesseractOCR.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = TesseractOCR.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7A65F6120EF37DE00600261 /* libstdc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libstdc++.tbd"; path = "usr/lib/libstdc++.tbd"; sourceTree = SDKROOT; };
 		C7A65F6320EF3B4A00600261 /* tessdata */ = {isa = PBXFileReference; lastKnownFileType = folder; path = tessdata; sourceTree = "<group>"; };
+		C7A7ABB320FB7D5F00561A3C /* OCRManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OCRManager.swift; sourceTree = "<group>"; };
 		C7C34D4A20F5E75300093892 /* capture.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = capture.png; sourceTree = "<group>"; };
 		C7FAEAF120F0AA6600733C60 /* GPUImage.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = GPUImage.xcodeproj; path = ../../../GPUImage2/framework/GPUImage.xcodeproj; sourceTree = "<group>"; };
 		CADC49CFB770BD4CFF95F45B /* Pods-TesseractForCSVUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TesseractForCSVUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-TesseractForCSVUITests/Pods-TesseractForCSVUITests.release.xcconfig"; sourceTree = "<group>"; };
@@ -208,6 +210,7 @@
 				C7A65F2D20EEFB6B00600261 /* CameraViewController.swift */,
 				C790F62F20FA600300B53D97 /* ImageConfirmationViewController.swift */,
 				C790F63820FB08D700B53D97 /* CSVViewController.swift */,
+				C7A7ABB320FB7D5F00561A3C /* OCRManager.swift */,
 				C7A65F5B20EF2DB700600261 /* TesseractManager.swift */,
 				C7026FFA20F179A5000D9E75 /* TextToCSVConverter.swift */,
 				C790F63A20FB158300B53D97 /* Extensions.swift */,
@@ -517,6 +520,7 @@
 			files = (
 				C7A65F2E20EEFB6B00600261 /* CameraViewController.swift in Sources */,
 				C790F63920FB08D700B53D97 /* CSVViewController.swift in Sources */,
+				C7A7ABB420FB7D5F00561A3C /* OCRManager.swift in Sources */,
 				C7A65F5C20EF2DB700600261 /* TesseractManager.swift in Sources */,
 				C790F63020FA600300B53D97 /* ImageConfirmationViewController.swift in Sources */,
 				C7A65F2C20EEFB6B00600261 /* AppDelegate.swift in Sources */,

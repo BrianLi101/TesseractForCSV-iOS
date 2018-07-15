@@ -8,8 +8,8 @@
 
 import UIKit
 import AVFoundation
-import WebKit
 import Vision
+import WebKit
 
 class CameraViewController: UIViewController {
 
@@ -60,8 +60,10 @@ class CameraViewController: UIViewController {
         captureSession.stopRunning()
     }
     
+    /*
+     * method that sets up the capture session
+     */
     func setUpCaptureSession() {
-        
         
         // setup capture session for camera interface
         captureSession.sessionPreset = .hd1920x1080
@@ -94,6 +96,9 @@ class CameraViewController: UIViewController {
         }
     }
     
+    /*
+     * method called when user wants to take a photo
+     */
     @IBAction func takePhotoClicked(_ sender: Any) {
         
         // call function to take photo
@@ -150,6 +155,7 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
 
         // set up photo capture settings and prepare for taking photo
         let captureSettings = AVCapturePhotoSettings()
+        captureSettings.flashMode = .auto
         let previewPixelType = captureSettings.availablePreviewPhotoPixelFormatTypes.first!
         let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType,
                              kCVPixelBufferWidthKey as String: 160,
@@ -167,7 +173,6 @@ extension CameraViewController: AVCapturePhotoCaptureDelegate {
         if let error = error {
             print(error.localizedDescription)
         }
-        
         
         if let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
             

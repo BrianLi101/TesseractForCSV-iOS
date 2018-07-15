@@ -22,6 +22,8 @@ class CSVViewController: UIViewController {
     
     var activityIndicator: UIActivityIndicatorView = UIActivityIndicatorView()
     
+    let ocrManager = OCRManager.sharedInstance
+    
     var fileURL: URL!
     
     override func viewDidLoad() {
@@ -85,11 +87,17 @@ class CSVViewController: UIViewController {
     @IBAction func rightNavButtonPressed(_ sender: Any) {
         let imageConfirmationViewController = self.presentingViewController as! ImageConfirmationViewController
         
-        // call word by word tesseract processing
-        imageConfirmationViewController.runAdvancedTesseract(forObservations: imageConfirmationViewController.textBoxes)
-        
         // put UI in a loading state until processing finishes
         configureUIForState(.loading)
+        
+        // run advanced word by word Tesseract processing
+        ocrManager.runAdvancedTesseractOCR(onImage: imageConfirmationViewController.imageView.image!, forObservations: imageConfirmationViewController.textBoxes) { (success, responseURL) in
+            
+            // update web view with new file if successful
+            if (success) {
+                self.updateFileURL(withFileURL: responseURL)
+            }
+        }
     }
     
     /*

@@ -151,6 +151,9 @@ class TextToCSVConverter {
         return csvString
     }
     
+    /*
+     * method that revises rows by using a column number to either reduce or add elements where possible
+     */
     private func textToCSVGuesstimate(forRows rows: [String], withColumnNumber columns: Int) -> String {
         var csvString = ""
         print("\n\n\nGuessing \(columns) columns")
@@ -194,6 +197,9 @@ class TextToCSVConverter {
         return csvString
     }
     
+    /*
+     * method that adds quotes around items in a row to act as escape key for commas that may be in numbers
+     */
     private func addQuotesAroundRowItems(forRow row: String) -> String {
         // split row into individual elements
         var items = row.split(separator: DELIMITER)
@@ -213,6 +219,9 @@ class TextToCSVConverter {
         return rowStr
     }
     
+    /*
+     * method that attempts to remove extra columns from a row by removing the shortest element in that row in order of first to last
+     */
     private func removeExtraColumnsFromRow(forRow row: String, withColumns columns: Int) -> String {
         var strArray = row.split(separator: DELIMITER)
         print("Removing extra columns in: \(strArray)")
@@ -242,10 +251,14 @@ class TextToCSVConverter {
         }
     }
     
+    /*
+     * method that attempts to add extra columns by taking spaces and splitting into two separate words
+     */
     private func addExtraColumnsToRow(forRow row: String, withColumns columns: Int) -> String {
         if (row.contains(" ")) {
             print("split apart the items in row to add extra column")
             
+            // TODO: see if multiple attempts needed in while loop
             // attempt to replace a string with a delimiter and quotes
             var replacedRow = row
             if let replaceIndex = replacedRow.range(of: " ") {

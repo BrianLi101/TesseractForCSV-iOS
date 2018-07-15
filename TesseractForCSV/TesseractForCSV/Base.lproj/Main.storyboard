@@ -74,7 +74,7 @@
                                                 <action selector="retakePressed:" destination="Dg0-Fv-6XT" id="Zq1-tJ-Byz"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="Confirm" id="s9O-Ao-Ysx">
+                                        <barButtonItem key="rightBarButtonItem" title="Basic OCR" id="s9O-Ao-Ysx">
                                             <connections>
                                                 <action selector="confirmPressed:" destination="Dg0-Fv-6XT" id="rp7-uz-ePk"/>
                                             </connections>
@@ -123,7 +123,7 @@
                                                 <action selector="leftNavButtonPressed:" destination="GFh-kN-pSG" id="Qbo-TI-Imd"/>
                                             </connections>
                                         </barButtonItem>
-                                        <barButtonItem key="rightBarButtonItem" title="Refine" id="sot-h5-2Rb">
+                                        <barButtonItem key="rightBarButtonItem" title="Advanced OCR" id="sot-h5-2Rb">
                                             <connections>
                                                 <action selector="rightNavButtonPressed:" destination="GFh-kN-pSG" id="bcT-YJ-ZWm"/>
                                             </connections>

@@ -30,6 +30,8 @@ class ImageConfirmationViewController: UIViewController {
     
     let tesseractManager = TesseractManager.sharedInstance
     
+    let ocrManager = OCRManager.sharedInstance
+    
     var csvViewController: CSVViewController!
     
     override func viewDidLoad() {
@@ -91,19 +93,31 @@ class ImageConfirmationViewController: UIViewController {
         }
     }
     
-    // exit confirmation page and return to camera
+    /*
+     * method that exits confirmation page and returns to camera
+     */
     @IBAction func retakePressed(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
     
+    // run basic ocr
     @IBAction func confirmPressed(_ sender: Any) {
         // update UI
         configureUIForState(.loading)
         
-        // run basic tesseract
-        runBasicTesseract()
+        // run basic tesseract with completion handler
+        ocrManager.runBasicTesseractOCR(onImage: self.imageView.image!) { (success, responseURL) in
+            
+            // present created file if successful
+            if (success) {
+                self.presentCSVVC(forFile: responseURL)
+            }
+        }
     }
     
+    /*
+     * method that presents the CSVViewController with the file loaded in the view
+     */
     func presentCSVVC(forFile fileURL: URL) {
         // add fileURL and present view controller
         csvViewController.fileURL = fileURL
@@ -112,40 +126,11 @@ class ImageConfirmationViewController: UIViewController {
 }
 
 // MARK: -Vision Framework for Text Box Detection
+// text detection boxes implementation found via https://github.com/appcoda/TextDetection
 extension ImageConfirmationViewController {
     
     func detectTextRectangles() {
-        /*
-        let handler = VNImageRequestHandler(cgImage: image.cgImage!, options: [:])
-        let textRequest = VNDetectTextRectanglesRequest { (request, error) in
-            // handle error
-            if (error != nil) {
-                print(error?.localizedDescription)
-                return
-            }
-            
-            guard let results = request.results as! [VNTextObservation] else {
-                print("Results could not be converted")
-            }
-            
-            
-        }
-        textRequest.reportCharacterBoxes = true
-        */
-        
-        /*
-        print(imageView.image?.imageOrientation.rawValue)
-        
-        
-        // reorient image to the direction it was taken
-        if let filteredImageCG = imageView.image?.cgImage {
-            let orientedFilteredImage = UIImage(cgImage: filteredImageCG, scale: 1.0, orientation: (imageView.image?.imageOrientation)!)
-    
-        }
-        let orientedImage = UIImage(cgImage: imageView.image as! CGImage, scale: 1.0, orientation: (imageView.image?.imageOrientation)!)
-        */
-        print("The image orientation in ICVC is \(image.imageOrientation.rawValue)")
-        
+
         let orientedImage = UIImage(cgImage: self.image.cgImage!, scale: 1.0, orientation: image.imageOrientation)
         
         // TODO: revise image orientation property
@@ -246,165 +231,4 @@ extension ImageConfirmationViewController {
         imageView.layer.addSublayer(outline)
     }
 }
-
-// MARK: -Cropping Image and Running OCR on Text Boxes
-extension ImageConfirmationViewController {
-    
-    /*
-     * method to crop an image to a rectangle for use in OCR
-     */
-    func getCroppedImage(fromImage sourceImage: UIImage, forRect rect: CGRect) -> UIImage? {
-
-        var sourceImageCGImage = sourceImage.orientedImage().cgImage
-        
-        var transformedRect = rect
-        
-        print(transformedRect)
-        
-        var transformSize = CGAffineTransform.identity
-        transformSize = transformSize.scaledBy(x: image.size.width, y: -image.size.height)
-        transformSize = transformSize.translatedBy(x: 0, y: -1)
-        transformedRect = rect.applying(transformSize)
-        print(transformedRect)
-      
-        let scaleUpPercentage: CGFloat = 0.05
-        let scaledRect = transformedRect.insetBy(dx: -transformedRect.size.width * scaleUpPercentage, dy: -transformedRect.size.height * scaleUpPercentage)
-
-        
-        guard let croppedImage = sourceImageCGImage?.cropping(to: transformedRect) else {
-            return nil
-        }
-    
-        // reorient and return image
-        return UIImage(cgImage: croppedImage).orientedImage()
-    }
-    
-    /*
-     * find the average character height and character width
-     */
-    func getAverageCharacterSize(forObservations observations: [VNTextObservation]) -> (CGFloat, CGFloat) {
-        
-        var heightSum: CGFloat = 0
-        var widthSum: CGFloat = 0
-        var characterCount: Int = 0
-        
-        for eachWord in observations {
-            heightSum += eachWord.boundingBox.height
-            
-            for eachChar in eachWord.characterBoxes! {
-                widthSum += eachChar.boundingBox.height
-                characterCount += 1
-            }
-        }
-        
-        let avgHeight = heightSum / CGFloat(observations.count)
-        let avgWidth = widthSum / CGFloat(characterCount)
-        return (avgHeight, avgWidth)
-    }
-    
-    func runBasicTesseract() {
-    
-         // run asynchronous call for OCR photo processing
-         DispatchQueue.main.async {
-            
-            // run OCR on image and print the output text
-            let ocrText = self.tesseractManager.runOCRonImage(inputImage: self.imageView.image!)
-            
-            let fileURL = self.createCSVFile(fromText: ocrText, forFile: DEFAULTFILENAME)
-            self.presentCSVVC(forFile: fileURL)
-            
-            // TODO: not currently working
-            // self.tesseractManager.getImageWithBlocks(inputImage: self.photoImage!)
-        }
-    }
-    
-    func createCSVFile(fromText text: String, forFile fileName: String) -> URL {
-        
-        // run text conversion
-        let converter = TextToCSVConverter.sharedInstance
-        let cleanedText = converter.cleanTesseractText(forText: text)
-        
-        let csvText = converter.convertTextToCSVString(forText: cleanedText, withConversionMethod: .guesstimate)
-        
-        // save CSV file and get file url
-        let url = converter.convertCSVStringToFile(forString: csvText, withFileName: fileName)
-        
-        return url!
-    }
-    
-    func runAdvancedTesseract(forObservations observations: [VNTextObservation]) {
-        
-        let (charHeight, charWidth) = getAverageCharacterSize(forObservations: observations)
-        print("the character height is \(charHeight)")
-        var csvString = ""
-        
-        var previousLineY: CGFloat? = nil
-        
-        var wordsInRow: [String: CGFloat] = [:]
-        
-        for word in observations {
-            print("iteration")
-            // get cropped image
-            let croppedImage = getCroppedImage(fromImage: image, forRect: word.boundingBox)
-            
-            // get words from cropped image
-            var wordText =  self.tesseractManager.runOCRonLine(inputImage: croppedImage!)
-            
-            // clean text
-            var cleanText = wordText
-            cleanText = cleanText.replacingOccurrences(of: "\n", with: "")
-            
-            // process addition to csvString
-            // TODO: fix spacing and delimitters
-            if (previousLineY != nil) {
-                if(abs(word.boundingBox.midY - previousLineY!) < charHeight) {
-                    // word is part of exisitng row
-                    wordsInRow[cleanText] = word.boundingBox.midX
-                } else {
-                    // word is part of new row
-                    previousLineY = word.boundingBox.midY
-                    
-                    csvString += sortRowDictionary(forRow: wordsInRow, withDelimiter: String(DELIMITER)) + "\n"
-                    
-                    // clear data from existing
-                    wordsInRow = [:]
-                    wordsInRow[cleanText] = word.boundingBox.midX
-                }
-            } else {
-                // handle first case
-                previousLineY = word.boundingBox.midY
-                wordsInRow[cleanText] = word.boundingBox.midX
-            }
-        }
-        
-        // append last row to csvString
-        csvString += sortRowDictionary(forRow: wordsInRow, withDelimiter: String(DELIMITER))
- 
-        // run text conversion
-        let converter = TextToCSVConverter.sharedInstance
-        
-        let refinedString = converter.convertTextToCSVString(forText: csvString, withConversionMethod: .guesstimate)
-        
-        // save CSV file and get file url
-        let url = converter.convertCSVStringToFile(forString: refinedString, withFileName: DEFAULTFILENAME)
-        csvViewController.updateFileURL(withFileURL: url!)
-    }
-    
-    /*
-     * helper method that takes a dictionary of unsorted words in the same row and orders them into a String
-     */
-    private func sortRowDictionary(forRow row: [String: CGFloat], withDelimiter delimiter: String) -> String {
-        
-        let sortedDictionary = row.sorted { $0.1 < $1.1 }
-        
-        var rowStr = ""
-        for (key, value) in sortedDictionary {
-            rowStr += key + delimiter
-        }
-        
-        // return string after removing extra delimiter at the end
-        return String(rowStr.dropLast())
-    }
-}
-
 
