@@ -54,6 +54,115 @@
             </objects>
             <point key="canvasLocation" x="136.80000000000001" y="132.68365817091455"/>
         </scene>
+        <!--Image Confirmation View Controller-->
+        <scene sceneID="OoF-ZV-HvG">
+            <objects>
+                <viewController storyboardIdentifier="ImageConfirmationViewController" id="Dg0-Fv-6XT" customClass="ImageConfirmationViewController" customModule="TesseractForCSV" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="pj3-GM-AUV">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="bRl-3E-JYH">
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
+                            </imageView>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pga-ro-mvH">
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                                <items>
+                                    <navigationItem id="bGs-WS-OTa">
+                                        <barButtonItem key="leftBarButtonItem" title="Retake" id="TNK-kT-Kes">
+                                            <connections>
+                                                <action selector="retakePressed:" destination="Dg0-Fv-6XT" id="Zq1-tJ-Byz"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Confirm" id="s9O-Ao-Ysx">
+                                            <connections>
+                                                <action selector="confirmPressed:" destination="Dg0-Fv-6XT" id="rp7-uz-ePk"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="ygQ-OG-w66" firstAttribute="bottom" secondItem="bRl-3E-JYH" secondAttribute="bottom" id="2Jf-jX-qv6"/>
+                            <constraint firstItem="pga-ro-mvH" firstAttribute="width" secondItem="pj3-GM-AUV" secondAttribute="width" id="KcQ-84-f59"/>
+                            <constraint firstItem="bRl-3E-JYH" firstAttribute="width" secondItem="pj3-GM-AUV" secondAttribute="width" id="OcY-zy-PyP"/>
+                            <constraint firstItem="pga-ro-mvH" firstAttribute="top" secondItem="ygQ-OG-w66" secondAttribute="top" id="TMZ-0V-k9G"/>
+                            <constraint firstItem="bRl-3E-JYH" firstAttribute="top" secondItem="ygQ-OG-w66" secondAttribute="top" id="mJI-en-H1V"/>
+                            <constraint firstItem="bRl-3E-JYH" firstAttribute="centerX" secondItem="ygQ-OG-w66" secondAttribute="centerX" id="tEy-Bh-g9j"/>
+                            <constraint firstItem="pga-ro-mvH" firstAttribute="centerX" secondItem="ygQ-OG-w66" secondAttribute="centerX" id="v3H-EV-qdm"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="ygQ-OG-w66"/>
+                    </view>
+                    <connections>
+                        <outlet property="confirmButton" destination="s9O-Ao-Ysx" id="tlM-WG-rFs"/>
+                        <outlet property="imageView" destination="bRl-3E-JYH" id="KdK-Eu-DTE"/>
+                        <outlet property="navigationBar" destination="pga-ro-mvH" id="Gsc-XN-8sZ"/>
+                        <outlet property="retakeButton" destination="TNK-kT-Kes" id="BW7-PZ-UpP"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="3Qk-Ky-0f2" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1026" y="133"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="UTH-m4-txy">
+            <objects>
+                <viewController storyboardIdentifier="CSVViewController" id="GFh-kN-pSG" customClass="CSVViewController" customModule="TesseractForCSV" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="vE0-9B-HyK">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dLb-jF-J2x">
+                                <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                                <items>
+                                    <navigationItem id="XTe-nH-q9b">
+                                        <barButtonItem key="leftBarButtonItem" title="Close" id="flF-66-Ru6">
+                                            <connections>
+                                                <action selector="leftNavButtonPressed:" destination="GFh-kN-pSG" id="Qbo-TI-Imd"/>
+                                            </connections>
+                                        </barButtonItem>
+                                        <barButtonItem key="rightBarButtonItem" title="Refine" id="sot-h5-2Rb">
+                                            <connections>
+                                                <action selector="rightNavButtonPressed:" destination="GFh-kN-pSG" id="bcT-YJ-ZWm"/>
+                                            </connections>
+                                        </barButtonItem>
+                                    </navigationItem>
+                                </items>
+                            </navigationBar>
+                            <wkWebView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fuN-4Z-1J8">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <color key="backgroundColor" red="0.36078431370000003" green="0.38823529410000002" blue="0.4039215686" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <wkWebViewConfiguration key="configuration">
+                                    <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                                    <wkPreferences key="preferences"/>
+                                </wkWebViewConfiguration>
+                            </wkWebView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="fuN-4Z-1J8" firstAttribute="width" secondItem="vE0-9B-HyK" secondAttribute="width" id="5XZ-Ji-A5j"/>
+                            <constraint firstItem="fuN-4Z-1J8" firstAttribute="centerX" secondItem="bus-d3-kLK" secondAttribute="centerX" id="7c4-hK-s1L"/>
+                            <constraint firstItem="fuN-4Z-1J8" firstAttribute="top" secondItem="dLb-jF-J2x" secondAttribute="bottom" id="93T-ql-hIZ"/>
+                            <constraint firstItem="dLb-jF-J2x" firstAttribute="top" secondItem="bus-d3-kLK" secondAttribute="top" id="I5d-qo-QMi"/>
+                            <constraint firstItem="bus-d3-kLK" firstAttribute="bottom" secondItem="fuN-4Z-1J8" secondAttribute="bottom" id="U5C-MX-419"/>
+                            <constraint firstItem="dLb-jF-J2x" firstAttribute="width" secondItem="vE0-9B-HyK" secondAttribute="width" id="UIL-ud-dhJ"/>
+                            <constraint firstItem="dLb-jF-J2x" firstAttribute="centerX" secondItem="bus-d3-kLK" secondAttribute="centerX" id="j1L-7N-GZ0"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="bus-d3-kLK"/>
+                    </view>
+                    <connections>
+                        <outlet property="leftNavButton" destination="flF-66-Ru6" id="0Pa-OF-gDU"/>
+                        <outlet property="navigationBar" destination="dLb-jF-J2x" id="oxG-7u-5cx"/>
+                        <outlet property="rightNavButton" destination="sot-h5-2Rb" id="tyP-J6-6wr"/>
+                        <outlet property="webView" destination="fuN-4Z-1J8" id="uy7-9D-ZWB"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tVY-kj-l1H" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1905" y="133"/>
+        </scene>
     </scenes>
     <resources>
         <image name="capture.png" width="600" height="600"/>

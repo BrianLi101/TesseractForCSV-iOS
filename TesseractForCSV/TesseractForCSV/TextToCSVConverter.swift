@@ -8,7 +8,7 @@
 
 import Foundation
 
-private let DELINEATOR: Character = " "
+let DELIMITER: Character = "@"
 
 class TextToCSVConverter {
     
@@ -51,9 +51,34 @@ class TextToCSVConverter {
         // remove spaces on or before new lines
         cleanedText = cleanedText.replacingOccurrences(of: " \n", with: "\n")
         cleanedText = cleanedText.replacingOccurrences(of: "\n ", with: "\n")
-
-        print("cleaned text is")
+        
+        // additional cleaning for ending spaces and enters
+        /*
+        print("cleaned text is ")
         dump(cleanedText)
+        while (cleanedText.dropLast() == "n" || cleanedText.dropLast() == " ") {
+            print("Entered clean text")
+            // remove empty spaces at the end of the string
+            if (cleanedText.last == " ") {
+                print("space removed")
+                cleanedText.remove(at: cleanedText.index(before: cleanedText.endIndex))
+            }
+            if (cleanedText.count > 1) {
+                //let index = cleanedText.index(cleanedText.endIndex, offsetBy: -2)
+                let substr = cleanedText.suffix(2)
+                print(substr)
+                if (substr == "\n") {
+                    print("enter removed")
+                    cleanedText.remove(at: cleanedText.index(before: cleanedText.endIndex))
+                    cleanedText.remove(at: cleanedText.index(before: cleanedText.endIndex))
+                }
+            }
+        }
+        */
+        
+        // use @ as the delimiter since spaces might be part of words
+        cleanedText = cleanedText.replacingOccurrences(of: " ", with: String(DELIMITER))
+
         return cleanedText
     }
     
@@ -86,19 +111,23 @@ class TextToCSVConverter {
      * run conversion of text to csvString with a selected method
      */
     func convertTextToCSVString(forText text: String, withConversionMethod method: ConversionMethod) -> String {
-
         let rows: [String] = text.components(separatedBy: "\n")
 
         var csvString: String!
         
         switch method {
+        
         case .basic:
+            // direct conversion of text to CSV as is
             print("Using basic conversion")
             csvString = textToCSVBasic(forRows: rows)
+        
         case .guesstimate:
-            print("Using row guessing conversion")
-            let columnNum = guessColumnNumber(forRows: rows)
+            // guesses column number by averaging delimiter occurrences in rows to calculate value
+            print("Using col guessing conversion")
+            let columnNum = guessColumnNumber(forRows: rows, withDelimiter: DELIMITER)
             csvString = textToCSVGuesstimate(forRows: rows, withColumnNumber: columnNum)
+        
         default:
             print("Using default conversion")
             csvString = ""
@@ -115,7 +144,7 @@ class TextToCSVConverter {
         
         for row in rows {
             // TODO: add "" around numbers and words to escape for the use of commas
-            csvString += row.replacingOccurrences(of: " ", with: ",")
+            csvString += row.replacingOccurrences(of: " ", with: String(DELIMITER))
             csvString += "\n"
         }
         
@@ -125,41 +154,67 @@ class TextToCSVConverter {
     private func textToCSVGuesstimate(forRows rows: [String], withColumnNumber columns: Int) -> String {
         var csvString = ""
         print("\n\n\nGuessing \(columns) columns")
+        
         for row in rows {
-            let rowsColumns = getOccurrencesOf(of: " ", inString: row) + 1
-            print("Row is: \(row) with \(rowsColumns) columns")
-            if rowsColumns == columns {
+            let rowColumns = getOccurrencesOf(of: DELIMITER, inString: row) + 1
+            print("Row is: \(row) with \(rowColumns) columns")
+            
+            // add "" around numbers and words to escape for the use of commas
+            var modedRow = addQuotesAroundRowItems(forRow: row)
+            
+            if rowColumns == columns {
                 // columns in row are correct
                 print("Row's columns are equal to average columns")
-                // TODO: add "" around numbers and words to escape for the use of commas
-                csvString += row.replacingOccurrences(of: " ", with: ",")
+
+                csvString += modedRow.replacingOccurrences(of: String(DELIMITER), with: ",")
                 csvString += "\n"
-            } else if rowsColumns > columns {
+                
+            } else if rowColumns > columns {
                 // columns in row are too many
                 print("Row's columns are more than average columns")
                 
-                // not too sure how to handle this yet
+                // TODO: revise this implementation
                 
                 // basic implementation removes the shortest string column in the row
-                csvString += removeExtraColumnsFromRow(forRow: row, withColumns: columns)
+                modedRow = removeExtraColumnsFromRow(forRow: modedRow, withColumns: columns)
+                csvString += modedRow.replacingOccurrences(of: String(DELIMITER), with: ",")
+                csvString += "\n"
             } else {
                 // columns in row are too few
-                // TODO: handle this case
                 print("Row's columns are less than average columns")
                 
-                // TODO: add "" around numbers and words to escape for the use of commas
-                csvString += row.replacingOccurrences(of: " ", with: ",")
+                // attempt to add extra columns to row by splitting spaces in words
+                modedRow = addExtraColumnsToRow(forRow: modedRow, withColumns: columns)
+                
+                csvString += modedRow.replacingOccurrences(of: String(DELIMITER), with: ",")
                 csvString += "\n"
             }
-            
-            
         }
         
         return csvString
     }
     
+    private func addQuotesAroundRowItems(forRow row: String) -> String {
+        // split row into individual elements
+        var items = row.split(separator: DELIMITER)
+        
+        var rowStr = ""
+        
+        for item in items {
+            rowStr += "\"\(item)\"" + String(DELIMITER)
+        }
+        
+        if (row != "") {
+            rowStr.removeLast()
+        }
+        
+        rowStr += "\n"
+        print("The new row is \(rowStr)")
+        return rowStr
+    }
+    
     private func removeExtraColumnsFromRow(forRow row: String, withColumns columns: Int) -> String {
-        var strArray = row.split(separator: DELINEATOR)
+        var strArray = row.split(separator: DELIMITER)
         print("Removing extra columns in: \(strArray)")
         
         // double check to see that row actually has too many columns
@@ -176,10 +231,10 @@ class TextToCSVConverter {
             for i in 0...(strArray.count - 1) {
                 rowString += strArray[i]
                 if i != strArray.count - 1 {
-                    rowString += ","
+                    rowString += String(DELIMITER)
                 }
             }
-            rowString += "\n"
+
             print(rowString)
             return rowString
         } else {
@@ -187,24 +242,42 @@ class TextToCSVConverter {
         }
     }
     
+    private func addExtraColumnsToRow(forRow row: String, withColumns columns: Int) -> String {
+        if (row.contains(" ")) {
+            print("split apart the items in row to add extra column")
+            
+            // attempt to replace a string with a delimiter and quotes
+            var replacedRow = row
+            if let replaceIndex = replacedRow.range(of: " ") {
+                replacedRow.replaceSubrange(replaceIndex, with: "\"\(DELIMITER)\"")
+            }
+            return replacedRow
+        } else {
+            // return normal row if no empty spaces to split
+            return row
+        }
+    }
+    
     /*
      * method to guess the number of columns by averaging and rounding blank spaces for all rows
      */
-    private func guessColumnNumber(forRows rows: [String]) -> Int {
+    private func guessColumnNumber(forRows rows: [String], withDelimiter delimiter: Character) -> Int {
         var sum: Int = 0
+        var rowCount: Int = 0
         for row in rows {
-            sum += getOccurrencesOf(of: DELINEATOR, inString: row)
+            sum += getOccurrencesOf(of: delimiter, inString: row)
+            
+            // only count rows with content to remove excess new lines at the end
+            if (row.count > 0) {
+                rowCount += 1
+            }
         }
         print("Sum is \(sum) for \(rows.count) rows")
-        var avg: Double = Double(sum) / Double(rows.count)
+        var avg: Double = Double(sum) / Double(rowCount)
         
-        
-        // code for rounding up or down using 0.5 threshold
-        // avg.round(.toNearestOrEven)
-        
-        // round down used because tesseract more frequently picks up extra random characters
-        // code for always rounding down
-        avg.round(.down)
+        // round down preferred for basic conversion because of tendancy of Tesseract to see extra characters but round nearest prefered for advanced which is more accurate
+        // avg.round(.down)
+        avg.round(.toNearestOrEven)
         
         // return average delmitters plus 1 to indicate number of columns
         return Int(avg) + 1
@@ -221,7 +294,7 @@ class TextToCSVConverter {
                 count += 1
             }
         }
-        print("Count of spaces for \(str) is \(count)")
+        print("Count of \(char) for \(str) is \(count)")
         return count
     }
 }

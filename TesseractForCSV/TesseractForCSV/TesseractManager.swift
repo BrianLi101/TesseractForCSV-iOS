@@ -19,31 +19,33 @@ class TesseractManager: NSObject {
     private var tesseract: G8Tesseract!
     private var image: UIImage!
     
-    // setup TesseractManager sharedInstance
+    // init TesseractManager sharedInstance
     private override init() {
         super.init()
         
         // set default language to english
         tesseract = G8Tesseract(language:"eng")
         
+        // uncomment line below to change language
+        // tesseract.language = "eng+ita"
+        
         // set delegate to self
         tesseract.delegate = self
         
+        // determines which models to use for OCR
         tesseract.engineMode = .tesseractCubeCombined
-        //tesseract.language = "eng+ita"
-        //tesseract.delegate = self
-        //tesseract.charWhitelist = "01234567890"
         
         // allow recognition of only numbers, letters, and basic symbols
-        tesseract.charWhitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,()$-"
-        
-        //tesseract.image = image
+        tesseract.charWhitelist = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ.,()$-+"
     }
     
     /*
-     * method that runs OCR and prints text from
+     * method that runs OCR on an image of a block of text
      */
     func runOCRonImage(inputImage: UIImage) -> String {
+        // set the segmentation mode to auto
+        tesseract.pageSegmentationMode = .auto
+        
         // update shared image to be the inputImage
         image = inputImage
 
@@ -56,26 +58,44 @@ class TesseractManager: NSObject {
         // run processing on image for text recognition
         tesseract.recognize()
         
-        print(tesseract.recognizedText)
-        
         return tesseract.recognizedText
     }
     
     /*
-     * incomplete, not working method
+     * method that runs OCR on an image of a single line of text
+     * (more accurate than the block of text implementation)
      */
-    func getImageWithBlocks(inputImage: UIImage) -> UIImage {
-        // You could retrieve more information about recognized text with that methods:
+    func runOCRonLine(inputImage: UIImage) -> String {
+        // set the segmentation mode to recognize a single line
+        tesseract.pageSegmentationMode = .singleLine
         
-        var lineBlocks = tesseract.recognizedBlocks(by: .textline)
+        // update shared image to be the inputImage
+        image = inputImage
         
-        var paragraphBlocks = tesseract.recognizedBlocks(by: .paragraph)
+        // set the inputImage for recognition
+        tesseract.image = image
         
-        var characterChoices = tesseract.characterChoices
+        // comment out line below to use raw image without GPUImage AdaptiveThreshold filter
+        tesseract.image = processImageWithAdaptiveThresholdFilter(forImage: image)
         
-        var imageWithBlocks: UIImage? = tesseract.image(withBlocks: characterChoices, drawText: true, thresholded: false)
+        // run processing on image for text recognition
+        tesseract.recognize()
         
-        return imageWithBlocks!
+        return tesseract.recognizedText
+    }
+    
+}
+
+// MARK: -G8TesseractDelegate
+extension TesseractManager: G8TesseractDelegate {
+    
+    /*
+     * delegate method that is called to get image for OCR processing
+     */
+    func preprocessedImage(for tesseract: G8Tesseract?, sourceImage: UIImage?) -> UIImage? {
+        
+        // bypasses tesseract's internal threshold image processing to return whatever image was supplied
+        return sourceImage
     }
     
     func progressImageRecognition(for tesseract: G8Tesseract?) {
@@ -86,20 +106,6 @@ class TesseractManager: NSObject {
         // return true if you need to interrupt tesseract before it finishes
         return false
     }
-    
-    
-    
-    
-}
-
-extension TesseractManager: G8TesseractDelegate {
-    
-    // uncomment below method to bypass Tesseract's internal threshold
-    func preprocessedImage(for tesseract: G8Tesseract?, sourceImage: UIImage?) -> UIImage? {
-        
-        print("Tesseract: bypassing internal threshold and using AdaptiveThresholdFilter")
-        return processImageWithAdaptiveThresholdFilter(forImage: sourceImage!)
-    }
 }
 
 // MARK: -GPUImage
@@ -107,7 +113,7 @@ extension TesseractManager {
     
     /*
      * method using GPUImage framework to process the image for better OCR results
-     * returns black and white image with filtering
+     * returns black and white image with filtering through adaptive threshold filter
      */
     func processImageWithAdaptiveThresholdFilter(forImage inputImage: UIImage) -> UIImage {
         // initialize adaptive threshold filter
