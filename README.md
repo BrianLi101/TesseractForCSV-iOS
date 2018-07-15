@@ -33,6 +33,7 @@ If you have not yet installed the [GPUImage2](https://github.com/BradLarson/GPUI
 ```
 No such module 'TesseractOCR'
 ```
+Make sure that you are working in ```TesseractForCSV.xcworkspace``` and not ```TesseractForCSV.xcodeproj```.
 Clean your build by going to ```Product->Clean``` or clicking ```Command+Shift+K```. If the problem continues to persist, go to ```File->Workspace Settings...``` and delete the derived data folder associated with the app.
 
 

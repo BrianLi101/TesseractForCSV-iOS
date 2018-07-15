@@ -292,6 +292,7 @@ class TextToCSVConverter {
         // avg.round(.down)
         avg.round(.toNearestOrEven)
         
+        // TODO: handle error for when avg is NaN due to divide by 0
         // return average delmitters plus 1 to indicate number of columns
         return Int(avg) + 1
     }
